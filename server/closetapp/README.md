@@ -1,4 +1,4 @@
 To start web server, run
->source bin/activate
+`source bin/activate`
 
->python app.py
+`python app.py`
