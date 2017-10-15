@@ -1,6 +1,16 @@
-from flask import Flask, render_template, url_for
+import os
+from flask import Flask, render_template
+from models.items import Items
+from models.database import db
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://closetapp:123@localhost/closet'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+# Bind the db instance to the app.
+db.app = app
+db.init_app(app)
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
 @app.route('/index')
@@ -9,6 +19,10 @@ def index():
 
 @app.route('/shuffle')
 def shuffle():
+	items = Items.query.all()
+	for item in items:
+		print(item.category)
+
 	return render_template('shuffle.html')
 
 
