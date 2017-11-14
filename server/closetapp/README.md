@@ -1,4 +1,4 @@
-#####Backend Server is using Flask.
+#####Backend Server is using Flask. Default port is 5000
 
 To start web server, run
 

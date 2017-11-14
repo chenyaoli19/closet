@@ -1,7 +1,9 @@
 import os
 from flask import Flask, render_template
-from models.items import Items
+from models.item import Item
 from models.database import db
+from responses import api_response, ResponseCodes
+import json
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://closetapp:123@localhost/closet'
@@ -12,22 +14,19 @@ db.init_app(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
-@app.route('/')
-@app.route('/index')
-def index():
-	return render_template('index.html')
+@app.route('/ping')
+def ping():
+    return api_response(code=ResponseCodes.SUCCESS, data='you won')
 
-@app.route('/shuffle')
-def shuffle():
-	items = Items.query.all()
-	for item in items:
-		print(item.category)
+@app.route('/item/bottom_top/<bottom_top_param>')
+def get_tops(bottom_top_param):
+	items = Item.query.filter(Item.bottom_top == bottom_top_param).all()
+	item_serialized = [item.serialize for item in items]
 
-	return render_template('shuffle.html')
+	return api_response(code=ResponseCodes.SUCCESS, data=item_serialized)
 
-
-@app.route('/collage')
-def collage():
+@app.route('/item/bottom_all')
+def get_bottom_and_all():
 	return render_template('collage.html')
 
 
