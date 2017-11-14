@@ -22,7 +22,7 @@ def ping():
 def get_tops(bottom_top_param):
 	items = Item.query.filter(Item.bottom_top == bottom_top_param).all()
 	item_serialized = [item.serialize for item in items]
-
+	# test
 	return api_response(code=ResponseCodes.SUCCESS, data=item_serialized)
 
 @app.route('/item/bottom_all')
