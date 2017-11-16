@@ -40,7 +40,8 @@ class ResponseCodes(object):
     DECISION_SUBMISSION_ERROR = ResponseCode(20, 500, "Failure on submitting at least one decision. " +
                                                       "Check response data for details")
 
-def api_response(code=None, data=None):
+
+def api_response(code=None, data=None, headers=None):
     status = "success" if code == ResponseCodes.SUCCESS else "failure"
     
     http_redirects = (301,)
