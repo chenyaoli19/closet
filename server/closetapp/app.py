@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, Response
 from models.item import Item
 from models.database import db
 from responses import api_response, ResponseCodes
@@ -13,6 +13,11 @@ db.init_app(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+@app.after_request
+def cross_domain(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
+
 
 @app.route('/ping')
 def ping():
@@ -25,6 +30,7 @@ def get_tops(bottom_top_param):
     item_serialized = [item.serialize for item in items]
 
     return api_response(code=ResponseCodes.SUCCESS, data=item_serialized)
+	
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -53,4 +53,4 @@ def api_response(code=None, data=None, headers=None):
         code=code.numeric_code,
         message=code.message,
         data=data,
-    ), code.http_status
+    ), code.http_status, headers

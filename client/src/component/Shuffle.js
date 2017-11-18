@@ -7,9 +7,8 @@ class Shuffle extends Component {
 	    super(props);
 
 	    const iniState = {
-	      tops: [],
-	      bottoms: [],
-	      alls: []
+	    	loaded: false,
+		    imageSection: null
 	    };
 
 	    this.state = iniState;
@@ -22,12 +21,27 @@ class Shuffle extends Component {
   			this.fetchItemsWithParam('bottom'),
   			this.fetchItemsWithParam('all')
   			]).then(axios.spread((topsRes, bottomsRes, allsRes) => {
+  				var tops = topsRes.data.data,
+					bottoms = bottomsRes.data.data,
+					alls = allsRes.data.data;
+
+				var topImageUrl = this.generateRandomTop(tops)["image_url"],
+					bottomImageUrl = this.generateRandomBottomOrAll(bottoms, alls)["image_url"];
+
+				var imageSection = function() {
+					return (
+						<div>
+							<img src={topImageUrl}/>
+		    				<img src={bottomImageUrl}/>	
+						</div>
+						)
+				};
+
   				const initializeData = {
-  					tops: topsRes.data,
-  					bottoms: bottomsRes.data,
-  					alls: allsRes.data
+  					loaded: true,
+  					imageSection: imageSection
   				};
-  				this.setState(initializeData)
+  				this.setState(initializeData) 				
   			}));
   	}
 
@@ -35,15 +49,35 @@ class Shuffle extends Component {
 		console.log("clicked!!")
 	}
 
+	generateRandomTop(tops) {
+		var len = tops.length,
+		    rand_idx = Math.floor(Math.random()*(len));
+		return tops[rand_idx]
+	}
+
+	generateRandomBottomOrAll(bottoms, alls) {
+		var bottoms_len = bottoms.length,
+			alls_len = alls.length,
+			rand_idx = Math.floor(Math.random()*(bottoms_len+alls_len));
+		if(rand_idx<=bottoms_len){
+			return bottoms[rand_idx]
+		}else{
+			return alls[rand_idx-bottoms_len]
+		}
+	}
+
 	fetchItemsWithParam(bottom_top) {
 	    const url = 'http://localhost:5000/item/bottom_top/' + bottom_top;
 	    return axios.get(url);
 	}
 
+
+
 	render() {
 		return (
 		  <div>
 		    <h1>Shuffle</h1>
+		  	{this.state.loaded}
 		    <button onClick={this.onShuffle}>
 			  Shuffle Clothes
 			</button>
